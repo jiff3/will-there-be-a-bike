@@ -1,8 +1,10 @@
 {
   "date": "2026-10-10",
   "deployment_status": "not_deployed",
-  "docker_build_status": "not_executed_docker_unavailable",
-  "github_ci_status": "not_executed_no_remote",
+  "native_record_scope": "pre-publication native data/model/application audit",
+  "docker_build_status": "passed_on_github_runner_local_docker_unavailable",
+  "github_ci_status": "all_four_jobs_passed",
+  "github_ci": {"run_url": "https://github.com/jiff3/will-there-be-a-bike/actions/runs/38088411123", "commit": "73db64e1a397bd57879c63de342babc235f60a26", "backend_passed": 173, "backend_coverage_percent": 81.67, "backend_seconds": 14.34, "frontend_passed": 44, "ui_smoke_passed": 2, "fullstack_passed": 6, "offline_demo_passed": 2},
   "backend": {"passed": 172, "skipped": 0, "coverage_percent": 81.76, "seconds": 45.03},
   "frontend": {"passed": 44, "lines_percent": 78.37, "statements_percent": 77.32, "branches_percent": 71.28, "functions_percent": 66.87},
   "https_fullstack": {"passed": 6, "seconds": 56.5, "public_provider_tls": false},

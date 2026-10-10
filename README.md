@@ -25,7 +25,7 @@ Open **http://localhost:8080**. Select a demo station, inspect its qualified for
 
 Stop with `docker compose -f compose.demo.yml down`; its separate volume preserves accounts/commutes and never reuses live/QA data. Both services have 1 GB limits; allow extra memory for Docker, builds and browsers. Stop serving before heavy training on an 8 GB host.
 
-**Verification boundary:** this seed/schema/single-origin app passed native integrated checks. Docker is unavailable on the validation host: production image builds and a clean-checkout container run are outstanding gates. CI defines them but has not yet run on GitHub. [Final verification record](docs/FINAL_VALIDATION.md).
+**Verification boundary:** production images and the seeded offline app have been built and run from clean GitHub Actions checkouts. The badge above reports the current four-job CI result. Local verification used native PostgreSQL because Docker was unavailable on that host; no hosted deployment is claimed. [Container/CI results](docs/GITHUB_VALIDATION.md) · [Native verification record](docs/FINAL_VALIDATION.md).
 
 ## What works
 
@@ -147,9 +147,11 @@ Keep the same catalog/staging directory throughout. Imports resume/deduplicate a
 
 ## Quality engineering
 
-Final local execution: **172 pytest tests against real PostgreSQL/PostGIS**, **44 Vitest tests**, **six persisted Chromium workflows over local HTTPS**, two offline UI smoke tests and two integrated offline journeys. Coverage: backend **81.76%**, frontend lines **78.37%**. The real-data recorded walkthrough and all six migration upgrade/downgrade/re-upgrade/drift checks passed. Lint/types/formatting/frontend production build passed.
+Latest local execution: **173 pytest tests against real PostgreSQL/PostGIS**, **44 Vitest tests**, **six persisted Chromium workflows over local HTTPS**, two offline UI smoke tests and two integrated offline journeys. Coverage: backend **81.76%**, frontend lines **78.37%**. The real-data recorded walkthrough and all six migration upgrade/downgrade/re-upgrade/drift checks passed. Lint/types/formatting/frontend production build passed.
 
-Tests exercise ownership/CSRF, resumability/duplicates, feature leakage/serialization, geographic ranking, job coordination, malformed/stale/out-of-order feeds, unavailable models, interrupted DB transactions, alerts and browser recovery. Automated tests forbid external provider HTTP. CI uses disposable PostGIS/fixtures and retains coverage/JUnit/traces/container diagnostics; Docker/remote CI execution is not claimed locally.
+Tests exercise ownership/CSRF, resumability/duplicates, feature leakage/serialization, geographic ranking, job coordination, malformed/stale/out-of-order feeds, unavailable models, interrupted DB transactions, alerts and browser recovery. Automated tests forbid external provider HTTP. CI uses disposable PostGIS/fixtures and retains coverage/JUnit/traces/container diagnostics. Image and container checks run on GitHub's Ubuntu runners, separately from the native Windows measurements.
+
+All four jobs passed in the [published CI run](https://github.com/jiff3/will-there-be-a-bike/actions/runs/38088411123): **173 backend tests**, **44 frontend tests**, **ten browser journeys**, migration round-trip, production image builds and clean-checkout offline startup. [Runner results and limitations](docs/GITHUB_VALIDATION.md).
 
 The preceding bounded loopback benchmark measured **67.39 req/s**, aggregate **p95 34 ms**, zero failures at eight users, API peak RSS **136.08 MiB**. Warm-cache synthetic workload, not a hosted SLO or an actual 8 GB-host qualification. [Testing architecture, commands and measured results](docs/TESTING.md).
 
@@ -169,7 +171,7 @@ PowerShell sets these variables using `$env:NAME='value'` before the command. [W
 
 [Render Blueprint](render.yaml), [single-origin Dockerfile](Dockerfile) and [manual CI-gated release](.github/workflows/deploy-render.yml) are prepared. Models persist as immutable image contents; observations/accounts/jobs persist in managed PostgreSQL. One-off release migrations and lock-coordinated scheduled updates are configured.
 
-**Not deployed.** No hosting purchase, credentials committed or live URL invented. [Exact owner/account steps, security and operations](docs/DEPLOYMENT.md). Production image builds and GitHub execution remain acceptance gates, not claimed successes.
+**Not deployed.** No hosting purchase, credentials committed or live URL invented. [Exact owner/account steps, security and operations](docs/DEPLOYMENT.md). Repository publication and CI do not deploy a hosted application; deployment workflows remain explicitly opt-in.
 
 ## Troubleshooting and honest limitations
 

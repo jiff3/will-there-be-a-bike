@@ -2,9 +2,9 @@
 
 ## Acceptance status
 
-Native integrated functionality is verified. **Release acceptance is not fully satisfied:** Docker is not installed here; production image builds and clean-checkout container startup have not been executed. GitHub has no configured remote in this checkout, so remote CI has not run. No Render credentials/resources/live deployment exist. Prepared configurations are not represented as a completed hosted deployment.
+This record preserves the native data/model/application audit before repository publication. Subsequent [GitHub validation](GITHUB_VALIDATION.md) passed all four jobs, production image builds and clean-checkout container startup. Docker remains unavailable on the native host, but those gates are now verified on a Docker-capable runner. No Render credentials/resources/live deployment exist; prepared configurations are not represented as a hosted deployment.
 
-The owner must pass all four CI jobs on a Docker-capable runner, verify the demo from a clean checkout, then apply the deployment steps in [DEPLOYMENT.md](DEPLOYMENT.md). No production secrets, hosting purchases, image publishing or external messages were performed.
+Require passing CI for each release commit, then apply the authorized hosting steps in [DEPLOYMENT.md](DEPLOYMENT.md). No production secrets, hosting purchases or production image publication were performed.
 
 ## Environment and separation
 
@@ -69,4 +69,4 @@ The 2025 winter artifact is not a validated current-season risk model. App/metad
 
 ## Remaining qualification
 
-Docker/production-image execution, GitHub runner execution, actual managed deployment and hosted smoke/load tests remain open. Also future work: multiple seasons, independently recorded stockout calibration, verified-email/recovery/MFA, broad browser/accessibility/penetration testing, long soaks, backup restoration and provider interruption drills. No claims of 100% coverage, exactly-once alerts, routing accuracy, public-host SLO or full 8 GB certification are made.
+Actual managed deployment and hosted smoke/load tests remain open. Docker/production-image and GitHub runner execution subsequently passed; see [the separate record](GITHUB_VALIDATION.md). Also future work: multiple seasons, independently recorded stockout calibration, verified-email/recovery/MFA, broad browser/accessibility/penetration testing, long soaks, backup restoration and provider interruption drills. No claims of 100% coverage, exactly-once alerts, routing accuracy, public-host SLO or full 8 GB certification are made.

@@ -2,6 +2,8 @@
 
 The subsequent final release pass is recorded in [FINAL_VALIDATION.md](FINAL_VALIDATION.md): 172 backend tests (81.76% coverage), 44 frontend tests, production-settings local HTTPS browser workflows, real-data retraining and provider-schema checks. Original QA/load measurements below remain dated records, not newly claimed hosted/container results.
 
+After publication, all four [GitHub CI jobs passed](GITHUB_VALIDATION.md), including 173 backend tests, production image builds, ten browser journeys and a clean-checkout offline demo. The extra test protects provider-managed extensions during rollback. Runner measurements are recorded separately from the native measurements below.
+
 This suite tests the existing modular monolith, not a second implementation of it. All QA fixtures are synthetic and isolated from application data. Provider requests are simulated; actual PostgreSQL/PostGIS, ingestion, SQL transactions, Python inference, cookie authentication and browser rendering are exercised.
 
 ## Test layers and safety
@@ -177,6 +179,6 @@ Generated local artifacts are ignored: `backend/reports/`, `backend/coverage.xml
 
 ### Explicit verification limits
 
-Docker is not installed on the validation host. Production image builds, container-based browser/load runs and GitHub execution remain unexecuted. Local production-settings HTTPS was subsequently exercised, but no hosted deployment occurred. Workflow/Compose parsing and provider-schema validation are not passing GitHub runs. CI must fail on unresolved platform differences.
+Docker is not installed on the native validation host. Production image builds, container-based browser/load runs and all four GitHub jobs subsequently passed on Ubuntu runners; see [executed runner results](GITHUB_VALIDATION.md). Local production-settings HTTPS was exercised, but no hosted deployment occurred. Parsing/schema validation alone is not considered passing CI; the initial platform failures were fixed and rerun without weakening gates.
 
 Only Chromium was run; Safari/Firefox, broad accessibility/security audits, long-duration soak tests, backup/restore drills and deployment interruption tests remain follow-up work. No independently calibrated stockout outcomes or historical inventory are claimed. Real-data browser comparisons remain opt-in and were not rerun in this phase; stored retrospective forecast comparisons are covered by PostGIS/API and component tests.

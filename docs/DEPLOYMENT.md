@@ -2,7 +2,7 @@
 
 ## Status and choice
 
-**Not deployed.** No hosting credentials/authorization were available. The Blueprint passed the current official `https://render.com/schema/render.yaml.json` on October 10, 2026; deploy response fields were checked against the official OpenAPI document. Local production-settings HTTPS browser tests passed. Docker is unavailable locally: image builds, provider deployment and hosted smoke tests remain required.
+**Not deployed.** No hosting credentials/authorization were available. The Blueprint passed the current official `https://render.com/schema/render.yaml.json` on October 10, 2026; deploy response fields were checked against the official OpenAPI document. Local production-settings HTTPS browser tests passed. Production images and the seeded demo now run in GitHub CI; provider deployment and hosted smoke tests remain required.
 
 Primary option: one paid Render Docker web service, a private managed PostgreSQL 16/PostGIS database, provider HTTPS, and pre-deploy migration. Sleeping free compute cannot reliably collect observations/evaluate alerts. Current plans/fields and paid pre-deploy behavior: [Blueprint reference](https://render.com/docs/blueprint-spec), [deploy lifecycle](https://render.com/docs/deploys). [PostGIS extension support](https://render.com/docs/postgresql-extensions).
 
@@ -10,7 +10,7 @@ The starting budgets are 512 MB web, 256 MB DB, 5 GB DB disk, autoscaling off—
 
 ## Exact remaining owner steps
 
-1. Push to your GitHub repository's `main`. Pass all four CI jobs on a Docker-capable runner before hosting. Locally run `docker compose -f compose.demo.yml up --build --wait --wait-timeout 180` and `docker build --target production -t bike-managed:local .`.
+1. Use the published [repository](https://github.com/jiff3/will-there-be-a-bike). Require all four [CI jobs](https://github.com/jiff3/will-there-be-a-bike/actions/workflows/ci.yml) to pass for the release commit before hosting. For a local container check, run `docker compose -f compose.demo.yml up --build --wait --wait-timeout 180` and `docker build --target production -t bike-managed:local .`.
 2. Connect the repo in Render and create a Blueprint from `render.yaml`; explicitly review/authorize paid resources. Supply `APP_PUBLIC_ORIGIN` as the **actual assigned** HTTPS origin, no path/slash. Do not assume the service name is available. Automatic deploys are off.
 3. The first release bootstraps PostGIS/migrations with the managed owner URL. **Before public registrations**, provision a limited runtime login as below. Retain owner credentials only as secret `MIGRATION_DATABASE_URL`; replace `DATABASE_URL` with the runtime role's internal URL. Change the Blueprint's `DATABASE_URL` definition from `fromDatabase` to `sync: false` so future syncs cannot revert to owner credentials. This owner bootstrap is a documented compromise, not least privilege out of the box.
 4. Confirm HTTPS origin, secure cookies, debug false, one worker, background jobs enabled, 60-second polling and private DB (`ipAllowList: []`). Optionally disable docs. No hardcoded session signing secret is needed: random session tokens are hashed in PostgreSQL.
