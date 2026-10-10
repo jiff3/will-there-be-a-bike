@@ -1,0 +1,8 @@
+{
+  "version": 8,
+  "name": "Offline schematic: no street basemap or routing data",
+  "sources": {},
+  "layers": [
+    {"id": "offline-background", "type": "background", "paint": {"background-color": "#e9eee3"}}
+  ]
+}
