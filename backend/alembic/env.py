@@ -37,6 +37,11 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
+    # The application owns public, not the provider's tiger/topology schemas.
+    # PostGIS images can add those to search_path, making their tables appear
+    # to autogenerate as unmapped application tables. Scope this session only.
+    connection.exec_driver_sql("SET search_path TO public")
+    connection.commit()
     context.configure(
         connection=connection,
         target_metadata=target_metadata,
