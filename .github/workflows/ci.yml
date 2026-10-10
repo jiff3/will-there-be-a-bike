@@ -146,6 +146,7 @@ jobs:
           docker compose -f compose.qa.yml logs --no-color > backend/reports/containers/logs.txt
           docker stats --no-stream > backend/reports/containers/resources.txt
           docker compose -f compose.qa.yml ps -a > backend/reports/containers/status.txt
+          docker compose -f compose.qa.yml ps -aq | xargs -r docker inspect --format '{{.Name}} {{json .State.Health}}' > backend/reports/containers/health.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
