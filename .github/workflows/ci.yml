@@ -1,0 +1,199 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+permissions:
+  contents: read
+concurrency:
+  group: qa-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4-alpine
+        env:
+          POSTGRES_DB: bike_test
+          POSTGRES_USER: bike
+          POSTGRES_PASSWORD: disposable-ci-only
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U bike -d bike_test"
+          --health-interval 3s --health-timeout 3s --health-retries 20 --memory 768m
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://bike:disposable-ci-only@localhost:5432/bike_test
+      BACKGROUND_JOBS_ENABLED: "false"
+      MPLBACKEND: Agg
+      OMP_NUM_THREADS: "1"
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            backend/pyproject.toml
+            backend/constraints.txt
+      - run: pip install -c constraints.txt -e ".[dev,ml]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy app
+      - name: Upgrade, downgrade, re-upgrade empty disposable schema
+        run: |
+          alembic upgrade head
+          alembic downgrade base
+          alembic upgrade head
+          alembic check
+      - name: Offline unit and real PostGIS integration coverage
+        run: pytest --require-postgis --cov=app --cov-report=xml --cov-report=html --cov-report=term --junitxml=reports/junit.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-tests
+          path: |
+            backend/reports
+            backend/coverage.xml
+            backend/htmlcov
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run format:check
+      - run: npm run test:run
+      - run: npx playwright install --with-deps chromium
+      - name: Isolated offline UI contract tests
+        run: npx playwright test smoke.spec.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-tests
+          path: |
+            frontend/coverage
+            frontend/playwright-report
+            frontend/test-results
+  fullstack-production-images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://bike_qa:disposable-local-test-only@127.0.0.1:5432/bike_qa_test
+      BACKGROUND_JOBS_ENABLED: "false"
+      AUTH_RATE_LIMIT: "100"
+      BIKE_E2E_QA: "1"
+      BIKE_E2E_EXTERNAL: "1"
+      BIKE_E2E_BASE_URL: http://localhost:8080
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            backend/pyproject.toml
+            backend/constraints.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: pip install -c backend/constraints.txt -e "backend[dev,inference,performance]"
+      - name: Build actual production runtime images
+        run: docker compose -f compose.qa.yml build
+      - name: Initialize ephemeral database and deterministic persisted fixtures
+        run: |
+          docker compose -f compose.qa.yml up -d --wait db
+          cd backend
+          python -m alembic upgrade head
+          python -m tests.support.qa seed
+      - name: Boot nginx, API and real model artifact
+        run: docker compose -f compose.qa.yml up -d --wait --wait-timeout 120
+      - run: npm ci
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - name: Full persisted browser workflows, no API mocking
+        working-directory: frontend
+        run: |
+          export BIKE_E2E_PYTHON="$(command -v python)"
+          npx playwright test fullstack.spec.ts
+      - name: Bounded performance smoke, real HTTP/SQL/model
+        working-directory: backend
+        run: python performance/benchmark.py --host http://localhost:8080 --users 4 --seconds 15
+      - name: Container diagnostics and resource snapshot
+        if: always()
+        run: |
+          mkdir -p backend/reports/containers
+          docker compose -f compose.qa.yml logs --no-color > backend/reports/containers/logs.txt
+          docker stats --no-stream > backend/reports/containers/resources.txt
+          docker compose -f compose.qa.yml ps -a > backend/reports/containers/status.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fullstack-production-validation
+          path: |
+            frontend/playwright-report
+            frontend/test-results
+            backend/reports
+      - name: Destroy this workflow's ephemeral stack
+        if: always()
+        run: docker compose -f compose.qa.yml down
+  managed-image-offline-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      BIKE_E2E_EXTERNAL: "1"
+      BIKE_E2E_DEMO: "1"
+      BIKE_E2E_BASE_URL: http://localhost:8080
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Build managed production image and boot isolated offline app
+        run: docker compose -f compose.demo.yml up --build -d --wait --wait-timeout 180
+      - run: npm ci
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - name: Actual single-origin map, inference, recommendations and replay
+        run: npx playwright test demo.spec.ts
+        working-directory: frontend
+      - name: Diagnostics
+        if: always()
+        run: |
+          mkdir -p backend/reports/demo
+          docker compose -f compose.demo.yml logs --no-color > backend/reports/demo/logs.txt
+          docker stats --no-stream > backend/reports/demo/resources.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: managed-image-demo
+          path: |
+            frontend/test-results
+            frontend/playwright-report
+            backend/reports/demo
+      - name: Stop only this job's ephemeral stack
+        if: always()
+        run: docker compose -f compose.demo.yml down
