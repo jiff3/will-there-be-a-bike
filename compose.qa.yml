@@ -1,0 +1,50 @@
+# Disposable QA only. No external provider jobs, no production secrets/volumes.
+name: bike-qa
+services:
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    environment:
+      POSTGRES_DB: bike_qa_test
+      POSTGRES_USER: bike_qa
+      POSTGRES_PASSWORD: disposable-local-test-only
+    ports: ["5432:5432"]
+    tmpfs: ["/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bike_qa -d bike_qa_test"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    mem_limit: 768m
+  backend:
+    build:
+      context: ./backend
+      target: production
+    environment:
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://bike_qa:disposable-local-test-only@db:5432/bike_qa_test
+      APP_PUBLIC_ORIGIN: http://localhost:8080
+      APP_CORS_ORIGINS: http://localhost:8080
+      AUTH_COOKIE_SECURE: "false"
+      AUTH_RATE_LIMIT: "100"
+      BACKGROUND_JOBS_ENABLED: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--no-access-log"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health/ready')"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+    mem_limit: 1g
+  web:
+    build:
+      context: ./frontend
+      target: production
+      args:
+        VITE_MAP_STYLE_URL: /qa-map-style.json
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports: ["8080:80"]
+    mem_limit: 128m

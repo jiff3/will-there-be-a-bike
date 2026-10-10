@@ -1,0 +1,51 @@
+# No resources are created until an owner explicitly applies this Blueprint.
+services:
+  - type: web
+    name: will-there-be-a-bike
+    runtime: docker
+    plan: 0.5c-512mb
+    region: virginia
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeployTrigger: "off"
+    preDeployCommand: python -m app.migrate
+    healthCheckPath: /api/v1/health/ready
+    maxShutdownDelaySeconds: 45
+    numInstances: 1
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_PUBLIC_ORIGIN
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bike-postgres
+          property: connectionString
+      - key: AUTH_COOKIE_SECURE
+        value: "true"
+      - key: AUTH_RATE_LIMIT
+        value: "10"
+      - key: BACKGROUND_JOBS_ENABLED
+        value: "true"
+      - key: GBFS_POLL_SECONDS
+        value: "60"
+      - key: DB_POOL_SIZE
+        value: "4"
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: SNAPSHOT_RETENTION_DAYS
+        value: "30"
+      - key: JOB_RETENTION_DAYS
+        value: "90"
+      - key: DOCS_ENABLED
+        value: "true"
+databases:
+  - name: bike-postgres
+    region: virginia
+    postgresMajorVersion: "16"
+    plan: 0.1c-256mb
+    diskSizeGB: 5
+    storageAutoscalingEnabled: false
+    ipAllowList: []

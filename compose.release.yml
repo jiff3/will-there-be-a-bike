@@ -1,0 +1,6 @@
+# Overlay for prebuilt immutable deployment images; not used by local QA.
+services:
+  backend:
+    image: ${BIKE_IMAGE_PREFIX:?Set registry/repository}/backend:${BIKE_IMAGE_TAG:?Set immutable commit SHA}
+  web:
+    image: ${BIKE_IMAGE_PREFIX:?Set registry/repository}/web:${BIKE_IMAGE_TAG:?Set immutable commit SHA}

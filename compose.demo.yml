@@ -1,0 +1,42 @@
+# Isolated, fully synthetic offline app. Does not reuse live/QA database volumes.
+name: bike-offline-demo
+services:
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    environment:
+      POSTGRES_DB: bike_demo
+      POSTGRES_USER: bike_demo
+      POSTGRES_PASSWORD: disposable-offline-demo-only
+    volumes: ["demo_db:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bike_demo -d bike_demo"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    mem_limit: 1g
+  web:
+    build:
+      context: .
+      target: production
+      args:
+        VITE_MAP_STYLE_URL: /offline-style.json
+    environment:
+      APP_ENV: development
+      APP_DEBUG: "false"
+      APP_PUBLIC_ORIGIN: http://localhost:8080
+      APP_CORS_ORIGINS: http://localhost:8080
+      DATABASE_URL: postgresql+asyncpg://bike_demo:disposable-offline-demo-only@db:5432/bike_demo
+      DEMO_MODE: "true"
+      BACKGROUND_JOBS_ENABLED: "false"
+      AUTH_COOKIE_SECURE: "false"
+      PORT: "10000"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["sh", "-c", "python -m alembic upgrade head && python -m app.modules.ingestion.demo && exec python -m app.deployment"]
+    ports: ["8080:10000"]
+    volumes: ["demo_work:/app/data"]
+    mem_limit: 1g
+volumes:
+  demo_db:
+  demo_work:

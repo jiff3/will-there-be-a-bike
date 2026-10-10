@@ -1,0 +1,28 @@
+{
+  "name": "will-there-be-a-bike",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Bike-share availability forecasting platform",
+  "scripts": {
+    "dev": "docker compose up --build",
+    "down": "docker compose down",
+    "reset": "docker compose down --volumes --remove-orphans",
+    "logs": "docker compose logs --follow",
+    "test": "docker compose run --rm backend pytest && docker compose run --rm frontend npm run test:run",
+    "lint": "docker compose run --rm backend ruff check . && docker compose run --rm frontend npm run lint",
+    "typecheck": "docker compose run --rm backend mypy app && docker compose run --rm frontend npm run typecheck",
+    "prod": "docker compose -f compose.prod.yml up --build -d",
+    "prod:down": "docker compose -f compose.prod.yml down",
+    "ml:train": "docker compose -f compose.ml.yml run --build --rm ml",
+    "qa:build": "docker compose -f compose.qa.yml build",
+    "qa:db": "docker compose -f compose.qa.yml up -d --wait db",
+    "qa:up": "docker compose -f compose.qa.yml up -d --wait --wait-timeout 120",
+    "qa:down": "docker compose -f compose.qa.yml down",
+    "demo": "docker compose -f compose.demo.yml up --build --wait --wait-timeout 180",
+    "demo:down": "docker compose -f compose.demo.yml down"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
+

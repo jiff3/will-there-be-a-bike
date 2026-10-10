@@ -1,0 +1,25 @@
+# Standalone training: stop the regular stack first on an 8 GB host.
+name: will-there-be-a-bike-ml
+services:
+  ml:
+    build:
+      context: ./backend
+      target: training
+    volumes:
+      - ./data:/app/data
+      - ./backend/app/modules/ml/artifacts:/app/app/modules/ml/artifacts
+      - ./docs/ml-evaluation:/app/report
+    mem_limit: 4g
+    cpus: 2.0
+    command:
+      - train
+      - --data
+      - /app/data/real/features.jsonl
+      - --locations
+      - /app/data/ml/locations.json
+      - --config
+      - /app/ml-config.json
+      - --output
+      - /app/app/modules/ml/artifacts
+      - --report
+      - /app/report

@@ -1,0 +1,85 @@
+name: will-there-be-a-bike-prod
+
+services:
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  backend:
+    build:
+      context: ./backend
+      target: production
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_LOG_LEVEL: ${APP_LOG_LEVEL:-INFO}
+      APP_CORS_ORIGINS: ${APP_PUBLIC_ORIGIN:?Set HTTPS APP_PUBLIC_ORIGIN}
+      APP_PUBLIC_ORIGIN: ${APP_PUBLIC_ORIGIN:?Set HTTPS APP_PUBLIC_ORIGIN}
+      AUTH_COOKIE_SECURE: "true"
+      AUTH_SESSION_HOURS: ${AUTH_SESSION_HOURS:-168}
+      AUTH_RATE_LIMIT: ${AUTH_RATE_LIMIT:-10}
+      DB_POOL_SIZE: ${DB_POOL_SIZE:-4}
+      BACKGROUND_JOBS_ENABLED: ${BACKGROUND_JOBS_ENABLED:-true}
+      SNAPSHOT_RETENTION_DAYS: ${SNAPSHOT_RETENTION_DAYS:-30}
+      JOB_RETENTION_DAYS: ${JOB_RETENTION_DAYS:-90}
+      DOCS_ENABLED: ${DOCS_ENABLED:-true}
+      # Only nginx can reach the unexposed API; nginx overwrites forwarded IPs.
+      FORWARDED_ALLOW_IPS: "*"
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL with URL-encoded credentials}
+      GBFS_DISCOVERY_URL: ${GBFS_DISCOVERY_URL:-https://gbfs.citibikenyc.com/gbfs/2.3/gbfs.json}
+      GBFS_POLL_SECONDS: ${GBFS_POLL_SECONDS:-60}
+      ML_ARTIFACT_PATH: ${ML_ARTIFACT_PATH:-/app/app/modules/ml/artifacts/current.json}
+    volumes:
+      - ingestion_data:/app/data
+    # Run the documented one-off migration release command before starting workers.
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2", "--no-access-log"]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health/ready')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  web:
+    build:
+      context: ./frontend
+      target: production
+      args:
+        VITE_MAP_STYLE_URL: ${VITE_MAP_STYLE_URL:-https://tiles.openfreemap.org/styles/positron}
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+volumes:
+  postgres_data:
+  ingestion_data:
+
