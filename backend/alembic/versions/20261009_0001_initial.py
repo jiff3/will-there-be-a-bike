@@ -71,4 +71,5 @@ def downgrade() -> None:
     op.drop_index("ix_stations_location", table_name="stations", postgresql_using="gist")
     op.drop_table("stations")
     op.drop_table("bike_share_systems")
-    op.execute("DROP EXTENSION IF EXISTS postgis")
+    # Database capabilities can predate this application and support other schemas.
+    # Leave PostGIS (and provider-installed topology/geocoder dependencies) intact.
