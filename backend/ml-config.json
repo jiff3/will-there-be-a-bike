@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "seed": 20251009,
+  "warmup_end": "2025-01-15",
+  "train_end": "2025-02-08",
+  "selection_end": "2025-02-13",
+  "calibration_end": "2025-02-18",
+  "test_end": "2025-03-01",
+  "history_delay_minutes": 1440,
+  "threads": 2,
+  "trees": 180,
+  "num_leaves": 15,
+  "min_data_in_leaf": 100,
+  "learning_rate": 0.05,
+  "interval_coverage": 0.9,
+  "maximum_train_rows": 300000,
+  "acceptance_improvement": 0.01
+}

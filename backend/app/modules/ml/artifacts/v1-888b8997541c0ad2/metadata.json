@@ -1,0 +1,790 @@
+{
+  "capacity_semantics": "Only past-observed supplied capacity is used; current GBFS capacity is never backdated. Citi Bike trip coordinates have no capacity.",
+  "config": {
+    "acceptance_improvement": 0.01,
+    "calibration_end": "2025-02-18",
+    "history_delay_minutes": 1440,
+    "interval_coverage": 0.9,
+    "learning_rate": 0.05,
+    "maximum_train_rows": 300000,
+    "min_data_in_leaf": 100,
+    "num_leaves": 15,
+    "schema_version": 1,
+    "seed": 20251009,
+    "selection_end": "2025-02-13",
+    "test_end": "2025-03-01",
+    "threads": 2,
+    "train_end": "2025-02-08",
+    "trees": 180,
+    "warmup_end": "2025-01-15"
+  },
+  "created_at": "2026-10-10T03:55:46.847696+00:00",
+  "data_sha256": "7d866d3678b0469585a4865619a4744fb7af07ade7e0e5ebd635b39d9f306447",
+  "evaluation_semantics": "Retrospective event-time replay. Archive publication timestamps are unknown, so timely-history results are conditional on a completed-trip provider. Archive-only inference needs only the already-built artifact and calendar.",
+  "implementation_sha256": {
+    "__init__.py": "4926d00976782c4eda816b246c2ffff2d52e2d778afd9dd20c69d34fadf4d8b8",
+    "artifacts.py": "080fe793800828132538374fbac88e4e1f8089db34300afad2ca87ee9d01d4a0",
+    "cli.py": "2f541749f3a4b70b344f87c01a36090cae0cb952e866a190f1fe6ffe5c7b8621",
+    "config.py": "c960bf64cfa19550dc6292907e6fdb4dac60ea29a28371e24759ec49eda08f22",
+    "data.py": "462635b073b0c09192e152417292e2d87974b53223221f778e3a0f60aec5a822",
+    "features.py": "c87d59cd62f7d5c500a6477bf5306e69e2813d0f57b8e303c76f906ad2eda328",
+    "geography.py": "ae2adf9adf38db53ccfd5552bba77b0acb9aab0a79a2ac3bf854373c161b9abc",
+    "inference.py": "911f0281cbbca1f3b818f1dd1f0757c9abb270602d8237ff3b919d9182ce225b",
+    "metrics.py": "7354f13e285473446d40e908be7c63c81b74afb1acb70e8f50623c7ae4bd1096",
+    "reporting.py": "a0565a34506d9c400c453f11b0e394c9ac901eb342d45fc82b6430c4ec7893bf",
+    "risk.py": "39b0ce53b2f723d3c05823fead1774dcfe24da181e44f7e7997ec7cada6faa1d",
+    "router.py": "fbc9a00962d41227c7cbc0ca7395da1fdb47ccd5efc897970c1b20572f0ca0d0",
+    "training.py": "688f123f35fe8cd06356648abcfeb69adb5fa8414dfa113997ef663a67825619"
+  },
+  "is_demo": false,
+  "resources": {
+    "lightgbm": "4.6.0",
+    "numpy": "2.2.6",
+    "peak_method": "50ms process RSS sampling; OS peak working set where available",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "python": "3.10.11",
+    "sampled_peak_process_bytes": 185475072,
+    "threads": 2,
+    "wall_seconds": 58.99895280000055
+  },
+  "source": {
+    "arrival_observed_bins": 556800,
+    "departure_observed_bins": 566400,
+    "first_bucket": 1735707600,
+    "last_bucket": 1740804300,
+    "locations_sha256": "6d20fbbeca55059f6e6c941730cc983cc55fe85b354d78a8634410f0dd15a502",
+    "station_count": 100,
+    "type": "coverage-aware 15-minute observed ride counts"
+  },
+  "tasks": {
+    "arrivals_30": {
+      "archive_selection_reason": "Early-validation MAE selection, independently audited on final period",
+      "candidates": {
+        "lgbm_calendar": {
+          "calibration": {
+            "count_dispersion_alpha": 0.2406112253665924,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47900,
+            "scaled_absolute_residual_quantile": 1.3968602418899536
+          },
+          "file": "arrivals_30-lgbm_calendar.txt",
+          "gain_importance": {
+            "capacity": 0.0,
+            "clock_cos": 42553.35111999512,
+            "clock_sin": 31870.704273223877,
+            "day_missing": 0.0,
+            "day_of_year_cos": 5702.274002075195,
+            "day_of_year_sin": 154565.02857208252,
+            "latitude": 28149.104499816895,
+            "longitude": 0.0,
+            "month": 9038.97802734375,
+            "prior_day": 0.0,
+            "prior_week": 0.0,
+            "quarter_of_day": 82136.53314208984,
+            "recent_comparable": 0.0,
+            "seasonal_mean": 5442733.329200745,
+            "seasonal_support": 8012.856109619141,
+            "station_code": 166505.5860671997,
+            "week_missing": 0.0,
+            "weekday": 183217.829120636,
+            "weekend": 17538.17719268799
+          }
+        },
+        "lgbm_lags": {
+          "calibration": {
+            "count_dispersion_alpha": 0.23714542388916016,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47900,
+            "scaled_absolute_residual_quantile": 1.4119504690170288
+          },
+          "file": "arrivals_30-lgbm_lags.txt",
+          "gain_importance": {
+            "capacity": 0.0,
+            "clock_cos": 32371.838752746582,
+            "clock_sin": 19348.405071258545,
+            "day_missing": 0.0,
+            "day_of_year_cos": 7474.464225769043,
+            "day_of_year_sin": 173234.21490478516,
+            "latitude": 28512.649040222168,
+            "longitude": 0.0,
+            "month": 4235.5839920043945,
+            "prior_day": 0.0,
+            "prior_week": 466.2644958496094,
+            "quarter_of_day": 75442.6537361145,
+            "recent_comparable": 438546.1919631958,
+            "seasonal_mean": 5142077.529464722,
+            "seasonal_support": 5988.534912109375,
+            "station_code": 123265.65819168091,
+            "week_missing": 0.0,
+            "weekday": 172080.82126617432,
+            "weekend": 14596.154037475586
+          }
+        },
+        "recent": {
+          "calibration": {
+            "count_dispersion_alpha": 0.2663193941116333,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47900,
+            "scaled_absolute_residual_quantile": 1.5
+          }
+        },
+        "seasonal": {
+          "calibration": {
+            "count_dispersion_alpha": 0.27776971459388733,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47900,
+            "scaled_absolute_residual_quantile": 1.4574700593948364
+          }
+        }
+      },
+      "history_selection_reason": "Early-validation MAE selection, independently audited on final period",
+      "selected_archive": "seasonal",
+      "selected_history": "seasonal",
+      "selection_metrics": {
+        "lgbm_calendar": {
+          "mae": 1.1465704441070557,
+          "mean_observed": 1.9317118997912317,
+          "mean_predicted": 2.300214478661285,
+          "n": 47900,
+          "poisson_deviance": 1.2212004374334509,
+          "rmse": 1.7754876613616943,
+          "zero_fraction": 0.4554697286012526
+        },
+        "lgbm_lags": {
+          "mae": 1.241373896598816,
+          "mean_observed": 1.9317118997912317,
+          "mean_predicted": 2.60210660012505,
+          "n": 47900,
+          "poisson_deviance": 1.2924012259162907,
+          "rmse": 1.9480082988739014,
+          "zero_fraction": 0.4554697286012526
+        },
+        "recent": {
+          "mae": 1.2568789720535278,
+          "mean_observed": 1.9317118997912317,
+          "mean_predicted": 2.3856680615110646,
+          "n": 47900,
+          "poisson_deviance": 2.9918622542947806,
+          "rmse": 2.080103874206543,
+          "zero_fraction": 0.4554697286012526
+        },
+        "seasonal": {
+          "mae": 1.135863184928894,
+          "mean_observed": 1.9317118997912317,
+          "mean_predicted": 1.9751009773778219,
+          "n": 47900,
+          "poisson_deviance": 1.3285360280213527,
+          "rmse": 1.8393855094909668,
+          "zero_fraction": 0.4554697286012526
+        }
+      },
+      "test_interval_metrics": {
+        "lgbm_calendar": {
+          "empirical_coverage": 0.9390047393364929,
+          "mean_width": 4.84792423248291
+        },
+        "lgbm_lags": {
+          "empirical_coverage": 0.9421042654028436,
+          "mean_width": 4.941061496734619
+        },
+        "recent": {
+          "empirical_coverage": 0.9067298578199052,
+          "mean_width": 4.651706218719482
+        },
+        "seasonal": {
+          "empirical_coverage": 0.9238483412322275,
+          "mean_width": 4.662672996520996
+        }
+      },
+      "test_metrics": {
+        "lgbm_calendar": {
+          "mae": 1.3464230298995972,
+          "mean_observed": 2.6210236966824643,
+          "mean_predicted": 2.4211963272281167,
+          "n": 105500,
+          "poisson_deviance": 1.343606498650399,
+          "rmse": 2.262115716934204,
+          "zero_fraction": 0.383042654028436
+        },
+        "lgbm_lags": {
+          "mae": 1.3506348133087158,
+          "mean_observed": 2.6210236966824643,
+          "mean_predicted": 2.548293310135956,
+          "n": 105500,
+          "poisson_deviance": 1.3234790110936867,
+          "rmse": 2.2368221282958984,
+          "zero_fraction": 0.383042654028436
+        },
+        "recent": {
+          "mae": 1.490189552307129,
+          "mean_observed": 2.6210236966824643,
+          "mean_predicted": 2.1246066383375357,
+          "n": 105500,
+          "poisson_deviance": 4.947192820654673,
+          "rmse": 2.557232141494751,
+          "zero_fraction": 0.383042654028436
+        },
+        "seasonal": {
+          "mae": 1.385611653327942,
+          "mean_observed": 2.6210236966824643,
+          "mean_predicted": 2.088002205953506,
+          "n": 105500,
+          "poisson_deviance": 1.5900551083371584,
+          "rmse": 2.4133360385894775,
+          "zero_fraction": 0.383042654028436
+        }
+      }
+    },
+    "arrivals_60": {
+      "archive_selection_reason": "Early-validation MAE selection, independently audited on final period",
+      "candidates": {
+        "lgbm_calendar": {
+          "calibration": {
+            "count_dispersion_alpha": 0.21157003939151764,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47700,
+            "scaled_absolute_residual_quantile": 1.806284785270691
+          },
+          "file": "arrivals_60-lgbm_calendar.txt",
+          "gain_importance": {
+            "capacity": 0.0,
+            "clock_cos": 86088.76947021484,
+            "clock_sin": 29624.706016540527,
+            "day_missing": 0.0,
+            "day_of_year_cos": 12548.827011108398,
+            "day_of_year_sin": 318222.9800567627,
+            "latitude": 40468.593170166016,
+            "longitude": 0.0,
+            "month": 21329.913833618164,
+            "prior_day": 0.0,
+            "prior_week": 0.0,
+            "quarter_of_day": 116329.84139251709,
+            "recent_comparable": 0.0,
+            "seasonal_mean": 10937234.248222351,
+            "seasonal_support": 19237.89308166504,
+            "station_code": 308641.2284088135,
+            "week_missing": 0.0,
+            "weekday": 343643.6783065796,
+            "weekend": 24925.78875732422
+          }
+        },
+        "lgbm_lags": {
+          "calibration": {
+            "count_dispersion_alpha": 0.2128387689590454,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47700,
+            "scaled_absolute_residual_quantile": 1.8234479427337646
+          },
+          "file": "arrivals_60-lgbm_lags.txt",
+          "gain_importance": {
+            "capacity": 0.0,
+            "clock_cos": 47700.15579223633,
+            "clock_sin": 12832.32576751709,
+            "day_missing": 0.0,
+            "day_of_year_cos": 14847.348205566406,
+            "day_of_year_sin": 351095.8431549072,
+            "latitude": 50831.73077392578,
+            "longitude": 0.0,
+            "month": 9454.371994018555,
+            "prior_day": 0.0,
+            "prior_week": 5113.441024780273,
+            "quarter_of_day": 103321.27220153809,
+            "recent_comparable": 1794323.0531082153,
+            "seasonal_mean": 9384567.655929565,
+            "seasonal_support": 6930.469970703125,
+            "station_code": 204909.0046081543,
+            "week_missing": 0.0,
+            "weekday": 339926.1198577881,
+            "weekend": 17595.98191833496
+          }
+        },
+        "recent": {
+          "calibration": {
+            "count_dispersion_alpha": 0.21155336499214172,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47700,
+            "scaled_absolute_residual_quantile": 1.8973665237426758
+          }
+        },
+        "seasonal": {
+          "calibration": {
+            "count_dispersion_alpha": 0.23252946138381958,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47700,
+            "scaled_absolute_residual_quantile": 1.8680273294448853
+          }
+        }
+      },
+      "history_selection_reason": "Early-validation MAE selection, independently audited on final period",
+      "selected_archive": "seasonal",
+      "selected_history": "seasonal",
+      "selection_metrics": {
+        "lgbm_calendar": {
+          "mae": 1.8250062465667725,
+          "mean_observed": 3.8745492662473793,
+          "mean_predicted": 4.64240513724273,
+          "n": 47700,
+          "poisson_deviance": 1.5549726681172178,
+          "rmse": 2.8240878582000732,
+          "zero_fraction": 0.3482809224318658
+        },
+        "lgbm_lags": {
+          "mae": 2.0372157096862793,
+          "mean_observed": 3.8745492662473793,
+          "mean_predicted": 5.212403592098059,
+          "n": 47700,
+          "poisson_deviance": 1.698767722059243,
+          "rmse": 3.1883723735809326,
+          "zero_fraction": 0.3482809224318658
+        },
+        "recent": {
+          "mae": 1.973448634147644,
+          "mean_observed": 3.8745492662473793,
+          "mean_predicted": 4.785209645912369,
+          "n": 47700,
+          "poisson_deviance": 3.1742640710594547,
+          "rmse": 3.2483208179473877,
+          "zero_fraction": 0.3482809224318658
+        },
+        "seasonal": {
+          "mae": 1.8027050495147705,
+          "mean_observed": 3.8745492662473793,
+          "mean_predicted": 3.9620689193813012,
+          "n": 47700,
+          "poisson_deviance": 1.6732678123314004,
+          "rmse": 2.911454200744629,
+          "zero_fraction": 0.3482809224318658
+        }
+      },
+      "test_interval_metrics": {
+        "lgbm_calendar": {
+          "empirical_coverage": 0.9308736942070276,
+          "mean_width": 7.9259161949157715
+        },
+        "lgbm_lags": {
+          "empirical_coverage": 0.9322602089268756,
+          "mean_width": 8.036571502685547
+        },
+        "recent": {
+          "empirical_coverage": 0.8795156695156695,
+          "mean_width": 7.361756801605225
+        },
+        "seasonal": {
+          "empirical_coverage": 0.9067711301044634,
+          "mean_width": 7.5354132652282715
+        }
+      },
+      "test_metrics": {
+        "lgbm_calendar": {
+          "mae": 2.173389434814453,
+          "mean_observed": 5.249002849002849,
+          "mean_predicted": 4.87192066699132,
+          "n": 105300,
+          "poisson_deviance": 1.710258422260139,
+          "rmse": 3.6979970932006836,
+          "zero_fraction": 0.2887179487179487
+        },
+        "lgbm_lags": {
+          "mae": 2.1897847652435303,
+          "mean_observed": 5.249002849002849,
+          "mean_predicted": 5.056001212133868,
+          "n": 105300,
+          "poisson_deviance": 1.6930786108163256,
+          "rmse": 3.667699098587036,
+          "zero_fraction": 0.2887179487179487
+        },
+        "recent": {
+          "mae": 2.4739696979522705,
+          "mean_observed": 5.249002849002849,
+          "mean_predicted": 4.255204181041217,
+          "n": 105300,
+          "poisson_deviance": 4.876708636277996,
+          "rmse": 4.228002071380615,
+          "zero_fraction": 0.2887179487179487
+        },
+        "seasonal": {
+          "mae": 2.27929949760437,
+          "mean_observed": 5.249002849002849,
+          "mean_predicted": 4.1816572367248614,
+          "n": 105300,
+          "poisson_deviance": 2.0897108953304997,
+          "rmse": 4.011033535003662,
+          "zero_fraction": 0.2887179487179487
+        }
+      }
+    },
+    "departures_30": {
+      "archive_selection_reason": "Early-validation MAE selection, independently audited on final period",
+      "candidates": {
+        "lgbm_calendar": {
+          "calibration": {
+            "count_dispersion_alpha": 0.23780518770217896,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47900,
+            "scaled_absolute_residual_quantile": 1.444035530090332
+          },
+          "file": "departures_30-lgbm_calendar.txt",
+          "gain_importance": {
+            "capacity": 0.0,
+            "clock_cos": 50885.594146728516,
+            "clock_sin": 46037.79016113281,
+            "day_missing": 0.0,
+            "day_of_year_cos": 4168.191345214844,
+            "day_of_year_sin": 170241.9289703369,
+            "latitude": 15743.133659362793,
+            "longitude": 245.90900421142578,
+            "month": 164.1320037841797,
+            "prior_day": 0.0,
+            "prior_week": 0.0,
+            "quarter_of_day": 113258.49655914307,
+            "recent_comparable": 0.0,
+            "seasonal_mean": 5053786.575798035,
+            "seasonal_support": 178.4029998779297,
+            "station_code": 166748.5630493164,
+            "week_missing": 0.0,
+            "weekday": 266719.380027771,
+            "weekend": 14417.653427124023
+          }
+        },
+        "lgbm_lags": {
+          "calibration": {
+            "count_dispersion_alpha": 0.24970698356628418,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47900,
+            "scaled_absolute_residual_quantile": 1.4445805549621582
+          },
+          "file": "departures_30-lgbm_lags.txt",
+          "gain_importance": {
+            "capacity": 0.0,
+            "clock_cos": 34953.130195617676,
+            "clock_sin": 30313.42668914795,
+            "day_missing": 0.0,
+            "day_of_year_cos": 5407.309494018555,
+            "day_of_year_sin": 189412.31604385376,
+            "latitude": 20309.678825378418,
+            "longitude": 0.0,
+            "month": 309.3160095214844,
+            "prior_day": 0.0,
+            "prior_week": 12696.76089477539,
+            "quarter_of_day": 102516.34336853027,
+            "recent_comparable": 675437.9604034424,
+            "seasonal_mean": 4526518.665206909,
+            "seasonal_support": 495.8389892578125,
+            "station_code": 112501.57214736938,
+            "week_missing": 0.0,
+            "weekday": 222095.18312072754,
+            "weekend": 22487.303176879883
+          }
+        },
+        "recent": {
+          "calibration": {
+            "count_dispersion_alpha": 0.28587332367897034,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47900,
+            "scaled_absolute_residual_quantile": 1.5811388492584229
+          }
+        },
+        "seasonal": {
+          "calibration": {
+            "count_dispersion_alpha": 0.2981986701488495,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47900,
+            "scaled_absolute_residual_quantile": 1.465614914894104
+          }
+        }
+      },
+      "history_selection_reason": "Early-validation MAE selection, independently audited on final period",
+      "selected_archive": "seasonal",
+      "selected_history": "seasonal",
+      "selection_metrics": {
+        "lgbm_calendar": {
+          "mae": 1.181978702545166,
+          "mean_observed": 1.9646137787056368,
+          "mean_predicted": 2.4238110059111655,
+          "n": 47900,
+          "poisson_deviance": 1.2615621771826482,
+          "rmse": 1.791669249534607,
+          "zero_fraction": 0.44872651356993737
+        },
+        "lgbm_lags": {
+          "mae": 1.2320897579193115,
+          "mean_observed": 1.9646137787056368,
+          "mean_predicted": 2.6024216986249256,
+          "n": 47900,
+          "poisson_deviance": 1.290010174775555,
+          "rmse": 1.885332465171814,
+          "zero_fraction": 0.44872651356993737
+        },
+        "recent": {
+          "mae": 1.2544153928756714,
+          "mean_observed": 1.9646137787056368,
+          "mean_predicted": 2.4033716105006264,
+          "n": 47900,
+          "poisson_deviance": 3.111024811043893,
+          "rmse": 2.0264909267425537,
+          "zero_fraction": 0.44872651356993737
+        },
+        "seasonal": {
+          "mae": 1.1608352661132812,
+          "mean_observed": 1.9646137787056368,
+          "mean_predicted": 1.8643409098298196,
+          "n": 47900,
+          "poisson_deviance": 1.355876564384562,
+          "rmse": 1.8797733783721924,
+          "zero_fraction": 0.44872651356993737
+        }
+      },
+      "test_interval_metrics": {
+        "lgbm_calendar": {
+          "empirical_coverage": 0.948218009478673,
+          "mean_width": 5.081497669219971
+        },
+        "lgbm_lags": {
+          "empirical_coverage": 0.9468625592417061,
+          "mean_width": 5.056018829345703
+        },
+        "recent": {
+          "empirical_coverage": 0.9117156398104266,
+          "mean_width": 4.804066181182861
+        },
+        "seasonal": {
+          "empirical_coverage": 0.9161042654028436,
+          "mean_width": 4.6168437004089355
+        }
+      },
+      "test_metrics": {
+        "lgbm_calendar": {
+          "mae": 1.3428406715393066,
+          "mean_observed": 2.608085308056872,
+          "mean_predicted": 2.5630256599410663,
+          "n": 105500,
+          "poisson_deviance": 1.3210632731550838,
+          "rmse": 2.190103054046631,
+          "zero_fraction": 0.37781990521327014
+        },
+        "lgbm_lags": {
+          "mae": 1.336999535560608,
+          "mean_observed": 2.608085308056872,
+          "mean_predicted": 2.5545573445729803,
+          "n": 105500,
+          "poisson_deviance": 1.3045827155885523,
+          "rmse": 2.1894731521606445,
+          "zero_fraction": 0.37781990521327014
+        },
+        "recent": {
+          "mae": 1.4847536087036133,
+          "mean_observed": 2.608085308056872,
+          "mean_predicted": 2.13831753875346,
+          "n": 105500,
+          "poisson_deviance": 4.989891199083687,
+          "rmse": 2.5169081687927246,
+          "zero_fraction": 0.37781990521327014
+        },
+        "seasonal": {
+          "mae": 1.4279670715332031,
+          "mean_observed": 2.608085308056872,
+          "mean_predicted": 1.9803624699794538,
+          "n": 105500,
+          "poisson_deviance": 1.6956513378155513,
+          "rmse": 2.498753547668457,
+          "zero_fraction": 0.37781990521327014
+        }
+      }
+    },
+    "departures_60": {
+      "archive_selection_reason": "Early-validation MAE selection, independently audited on final period",
+      "candidates": {
+        "lgbm_calendar": {
+          "calibration": {
+            "count_dispersion_alpha": 0.21817150712013245,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47700,
+            "scaled_absolute_residual_quantile": 1.8649516105651855
+          },
+          "file": "departures_60-lgbm_calendar.txt",
+          "gain_importance": {
+            "capacity": 0.0,
+            "clock_cos": 117716.6291809082,
+            "clock_sin": 52476.58692932129,
+            "day_missing": 0.0,
+            "day_of_year_cos": 14151.227188110352,
+            "day_of_year_sin": 330040.12673950195,
+            "latitude": 26491.01301574707,
+            "longitude": 837.4569702148438,
+            "month": 2901.468048095703,
+            "prior_day": 0.0,
+            "prior_week": 0.0,
+            "quarter_of_day": 178478.3575744629,
+            "recent_comparable": 0.0,
+            "seasonal_mean": 10170343.271453857,
+            "seasonal_support": 515.2160034179688,
+            "station_code": 281224.68978881836,
+            "week_missing": 0.0,
+            "weekday": 528008.9228973389,
+            "weekend": 17955.321990966797
+          }
+        },
+        "lgbm_lags": {
+          "calibration": {
+            "count_dispersion_alpha": 0.23068895936012268,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47700,
+            "scaled_absolute_residual_quantile": 1.9014467000961304
+          },
+          "file": "departures_60-lgbm_lags.txt",
+          "gain_importance": {
+            "capacity": 0.0,
+            "clock_cos": 46949.21008300781,
+            "clock_sin": 29068.13606262207,
+            "day_missing": 0.0,
+            "day_of_year_cos": 22255.718795776367,
+            "day_of_year_sin": 383817.6810913086,
+            "latitude": 30911.750885009766,
+            "longitude": 1704.02001953125,
+            "month": 0.0,
+            "prior_day": 0.0,
+            "prior_week": 34910.35414123535,
+            "quarter_of_day": 152459.402885437,
+            "recent_comparable": 2391392.036262512,
+            "seasonal_mean": 8087362.574188232,
+            "seasonal_support": 3236.9390258789062,
+            "station_code": 168984.484916687,
+            "week_missing": 0.0,
+            "weekday": 417082.8422546387,
+            "weekend": 31631.229934692383
+          }
+        },
+        "recent": {
+          "calibration": {
+            "count_dispersion_alpha": 0.2270086258649826,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47700,
+            "scaled_absolute_residual_quantile": 1.940285086631775
+          }
+        },
+        "seasonal": {
+          "calibration": {
+            "count_dispersion_alpha": 0.25041285157203674,
+            "coverage_target": 0.9,
+            "method": "split-validation scaled residual; empirical temporal coverage, not guaranteed",
+            "rows": 47700,
+            "scaled_absolute_residual_quantile": 1.9033780097961426
+          }
+        }
+      },
+      "history_selection_reason": "Early-validation MAE selection, independently audited on final period",
+      "selected_archive": "seasonal",
+      "selected_history": "seasonal",
+      "selection_metrics": {
+        "lgbm_calendar": {
+          "mae": 1.878835678100586,
+          "mean_observed": 3.940062893081761,
+          "mean_predicted": 4.817373893932133,
+          "n": 47700,
+          "poisson_deviance": 1.6028685062048482,
+          "rmse": 2.8327040672302246,
+          "zero_fraction": 0.34146750524109015
+        },
+        "lgbm_lags": {
+          "mae": 2.120776891708374,
+          "mean_observed": 3.940062893081761,
+          "mean_predicted": 5.412061915516978,
+          "n": 47700,
+          "poisson_deviance": 1.7771144797798057,
+          "rmse": 3.2305595874786377,
+          "zero_fraction": 0.34146750524109015
+        },
+        "recent": {
+          "mae": 1.9459015130996704,
+          "mean_observed": 3.940062893081761,
+          "mean_predicted": 4.819863733898323,
+          "n": 47700,
+          "poisson_deviance": 3.1425633169911564,
+          "rmse": 3.1038413047790527,
+          "zero_fraction": 0.34146750524109015
+        },
+        "seasonal": {
+          "mae": 1.8857576847076416,
+          "mean_observed": 3.940062893081761,
+          "mean_predicted": 3.7389300138398815,
+          "n": 47700,
+          "poisson_deviance": 1.7578876074999354,
+          "rmse": 3.0412814617156982,
+          "zero_fraction": 0.34146750524109015
+        }
+      },
+      "test_interval_metrics": {
+        "lgbm_calendar": {
+          "empirical_coverage": 0.941329534662868,
+          "mean_width": 8.26099681854248
+        },
+        "lgbm_lags": {
+          "empirical_coverage": 0.9427540360873694,
+          "mean_width": 8.529154777526855
+        },
+        "recent": {
+          "empirical_coverage": 0.8850902184235517,
+          "mean_width": 7.533048629760742
+        },
+        "seasonal": {
+          "empirical_coverage": 0.8979392212725547,
+          "mean_width": 7.549762725830078
+        }
+      },
+      "test_metrics": {
+        "lgbm_calendar": {
+          "mae": 2.1547350883483887,
+          "mean_observed": 5.22355175688509,
+          "mean_predicted": 5.048120934742115,
+          "n": 105300,
+          "poisson_deviance": 1.6800721457237415,
+          "rmse": 3.5636050701141357,
+          "zero_fraction": 0.2843684710351377
+        },
+        "lgbm_lags": {
+          "mae": 2.1921539306640625,
+          "mean_observed": 5.22355175688509,
+          "mean_predicted": 5.188253537332329,
+          "n": 105300,
+          "poisson_deviance": 1.6828201650968515,
+          "rmse": 3.6127350330352783,
+          "zero_fraction": 0.2843684710351377
+        },
+        "recent": {
+          "mae": 2.455256462097168,
+          "mean_observed": 5.22355175688509,
+          "mean_predicted": 4.282511873286705,
+          "n": 105300,
+          "poisson_deviance": 4.896012625621471,
+          "rmse": 4.1389265060424805,
+          "zero_fraction": 0.2843684710351377
+        },
+        "seasonal": {
+          "mae": 2.3910140991210938,
+          "mean_observed": 5.22355175688509,
+          "mean_predicted": 3.965642550153894,
+          "n": 105300,
+          "poisson_deviance": 2.3372423489127554,
+          "rmse": 4.253736972808838,
+          "zero_fraction": 0.2843684710351377
+        }
+      }
+    }
+  },
+  "version": "v1-888b8997541c0ad2"
+}

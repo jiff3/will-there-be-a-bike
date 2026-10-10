@@ -1,0 +1,5 @@
+# Feature implementation checksums must be identical on Windows and Linux.
+*.py text eol=lf
+
+# Native models and all manifest-listed JSON must retain their exact bytes.
+backend/app/modules/ml/artifacts/** -text

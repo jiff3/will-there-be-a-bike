@@ -1,0 +1,50 @@
+{
+  "files": {
+    "arrivals_30-lgbm_calendar.txt": "7ac79b9447ee3426f675cb5575f07cd45f6d05f088d3fbe25644ee8d08f39651",
+    "arrivals_30-lgbm_lags.txt": "7b5538352018ec3ed0e19881281da4d0669ab92e4f1d73bbb717c052a1c49c00",
+    "arrivals_60-lgbm_calendar.txt": "b40850320682902ea7c1dd395d100e8e9fa5422536c215567837a9c4fc3af8c5",
+    "arrivals_60-lgbm_lags.txt": "66e1c95253656fd5750a0dac997c78a83379000a90213dade0d74e4e81a03636",
+    "departures_30-lgbm_calendar.txt": "e0f493bbf3779932ca05443364420f023ff8167795f826c07cc206d8dd1f43ae",
+    "departures_30-lgbm_lags.txt": "3a6dadf45b79ece21c3142e5e4f280714735ce9aeaa591727cb4ec808f33a8ad",
+    "departures_60-lgbm_calendar.txt": "f3e12924dd0a2097f8b99e6463cf0e1fbca5f8f2c423b093808f7d3619d006a0",
+    "departures_60-lgbm_lags.txt": "abb9888545d44e65b8990daacc93e7f2b1504bb150f2c5a2944ff219569cb6eb",
+    "locations.json": "b57583d7ae44690d0b227a47a7310c7c7288f0e6c044044866a951674e9e275e",
+    "metadata.json": "f4bbdbb07664a882ea9a19e3b861e0220264c9c62dadc7e4f97fc0924e148f76",
+    "seasonal.json": "bd149fd30e4c4f7a516deef08f46c0ff2cae4ea0418d670e8ae1dacd1f080819"
+  },
+  "format_version": 1,
+  "lightgbm_version": "4.6.0",
+  "schema": {
+    "bucket_seconds": 900,
+    "count_order": [
+      "departures",
+      "arrivals"
+    ],
+    "dtype": "float32",
+    "names": [
+      "station_code",
+      "latitude",
+      "longitude",
+      "capacity",
+      "weekday",
+      "quarter_of_day",
+      "weekend",
+      "month",
+      "day_of_year_sin",
+      "day_of_year_cos",
+      "clock_sin",
+      "clock_cos",
+      "seasonal_mean",
+      "seasonal_support",
+      "prior_day",
+      "prior_week",
+      "recent_comparable",
+      "day_missing",
+      "week_missing"
+    ],
+    "timezone": "America/New_York",
+    "version": 1
+  },
+  "schema_hash": "550d085c8d35f386859b7623ecf9ea2a77d5eab8bb1f9bd32d9c2a866e57781c",
+  "version": "v1-888b8997541c0ad2"
+}

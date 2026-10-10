@@ -1,0 +1,1 @@
+{"version":"2.3","last_updated":1735736400,"ttl":60,"data":{"stations":[{"station_id":"DEMO-A","short_name":"DEMO-OLD-A","name":"Synthetic demo pickup","lat":40.748,"lon":-73.985,"capacity":20},{"station_id":"DEMO-B","name":"Synthetic demo destination","lat":40.749,"lon":-73.984,"capacity":20}]}}
