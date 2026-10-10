@@ -1,0 +1,55 @@
+{
+  "recorded_date": "2026-10-10",
+  "environment": {
+    "os": "Windows with WSL PostgreSQL",
+    "python": "3.12.14",
+    "node_major": 24,
+    "postgresql": "16.9",
+    "postgis": "3.5.3",
+    "cpu": "Intel i7-6700, 4 cores / 8 threads",
+    "host_ram_gib": 15.94,
+    "docker_available": false
+  },
+  "tests": {
+    "backend": {"passed": 145, "skipped": 0, "coverage_percent": 82.97, "seconds": 38.07},
+    "frontend": {"passed": 42, "lines_percent": 78.26, "statements_percent": 77.18, "branches_percent": 71.46, "functions_percent": 66.45},
+    "browser": {"passed": 8, "skipped_real_data_opt_in": 4, "failures": 0, "retries": 0, "engine": "Chromium", "repeat_each_2": {"passed": 16, "skipped": 8, "failures": 0}},
+    "migration_roundtrip": "upgrade head / downgrade base / upgrade head / check passed in isolated empty database"
+  },
+  "load_scope": {
+    "users": 8,
+    "requested_seconds": 30,
+    "api_workers": 1,
+    "pool_size": 4,
+    "pool_overflow": 2,
+    "stations": 100,
+    "fixtures": "synthetic QA observations; real sealed inference artifact, predominantly warm counts",
+    "target": "loopback native HTTP API and real WSL PostGIS",
+    "resource_scope": "only API PID; excludes PostgreSQL, WSL, browser and load generator",
+    "percentile_precision": "Locust approximate response-time histogram"
+  },
+  "load_runs": [
+    {
+      "name": "pooled-baseline",
+      "requests": 1174, "failures": 0, "requests_per_second": 39.5818946822,
+      "p50_ms": 20, "p95_ms": 510, "p99_ms": 750,
+      "max_api_rss_mib": 139.5, "mean_cpu_percent_one_core": 78.1460317460,
+      "endpoint_p95_ms": {"stations_bbox": 72, "nearby": 91, "inference": 79, "recommendations": 730}
+    },
+    {
+      "name": "optimized",
+      "requests": 1808, "failures": 0, "requests_per_second": 61.7749300765,
+      "p50_ms": 13, "p95_ms": 41, "p99_ms": 150,
+      "max_api_rss_mib": 137.7109375, "mean_cpu_percent_one_core": 43.9920634921,
+      "endpoint_p95_ms": {"stations_bbox": 30, "nearby": 31, "inference": 41, "recommendations": 59}
+    },
+    {
+      "name": "optimized-repeat",
+      "requests": 1982, "failures": 0, "requests_per_second": 67.3877696707,
+      "p50_ms": 12, "p95_ms": 34, "p99_ms": 84,
+      "max_api_rss_mib": 136.078125, "mean_cpu_percent_one_core": 46.3428571429,
+      "endpoint_p95_ms": {"stations_bbox": 26, "nearby": 25, "inference": 32, "recommendations": 49}
+    }
+  ],
+  "not_executed": ["production Docker images", "GitHub runner workflows", "HTTPS deployment", "Firefox/Safari", "8 GB physical-host qualification"]
+}
